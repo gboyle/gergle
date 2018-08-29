@@ -21,12 +21,8 @@
 #include "MainWindow.h"
 #include "Game.h"
 
-Game::Game( MainWindow& wnd )
-	:
-	wnd( wnd ),
-	gfx( wnd )
-{
-}
+Game::Game(MainWindow &wnd)
+    : wnd(wnd), gfx(wnd), rng(std::random_device()()), board(gfx), snake(Location(5,5)) {}
 
 void Game::Go()
 {
@@ -38,8 +34,13 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	if (wnd.kbd.KeyIsPressed(VK_UP)) { snake.moveBy(Location(0, -1)); }
+	if (wnd.kbd.KeyIsPressed(VK_DOWN)) { snake.moveBy(Location(0, 1)); }
+	if (wnd.kbd.KeyIsPressed(VK_LEFT)) { snake.moveBy(Location(-1, 0)); }
+	if (wnd.kbd.KeyIsPressed(VK_RIGHT)) { snake.moveBy(Location(1, 0)); }
 }
 
-void Game::ComposeFrame()
-{
+void Game::ComposeFrame() {
+
+	snake.draw(board);
 }

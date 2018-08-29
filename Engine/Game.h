@@ -24,6 +24,11 @@
 #include "Mouse.h"
 #include "Graphics.h"
 
+#include "board.h"
+#include "snake.h"
+
+#include <random>
+
 class Game
 {
 public:
@@ -43,4 +48,9 @@ private:
 	/********************************/
 	/*  User Variables              */
 	/********************************/
+
+	std::mt19937 rng;
+
+	Board board;
+	Snake snake;
 };
