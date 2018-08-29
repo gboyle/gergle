@@ -6,6 +6,7 @@
 class Board {
 
     static constexpr int dimension = 20;
+	static constexpr int cell_padding = 1;
 
     Graphics &gfx;
 
