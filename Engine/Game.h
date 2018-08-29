@@ -26,6 +26,7 @@
 
 #include "board.h"
 #include "snake.h"
+#include "goal.h"
 
 #include <random>
 
@@ -53,4 +54,10 @@ private:
 
 	Board board;
 	Snake snake;
+	Goal goal;
+
+	Location delta = { 1, 0 };
+	static constexpr int snake_move_period = 20;
+	int snake_move_counter = snake_move_period;
+	bool game_over = false;
 };

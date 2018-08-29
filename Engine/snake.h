@@ -20,8 +20,10 @@ class Snake {
         void initHead(Location const &in_loc);
         void initTail();
 
-		void moveBy(Location const &delta);
+        void moveBy(Location const &delta);
         void follow(Segment const &next);
+
+        Location const &getLocation() const;
 
         void draw(Board &board);
     };
@@ -37,6 +39,11 @@ class Snake {
 
     void moveBy(Location const &delta);
     void grow();
+
+    Location getNextHead(Location const &delta) const;
+
+    bool isInTileExceptEnd(Location const &loc) const;
+    bool isInTile(Location const &loc) const;
 
     void draw(Board &board);
 };

@@ -6,11 +6,23 @@
 Board::Board(Graphics &gfx)
     : gfx(gfx),
       width(Graphics::ScreenWidth / dimension),
-      height(Graphics::ScreenHeight / dimension) {}
+      height(Graphics::ScreenHeight / dimension) {
+}
 
-int Board::gridWidth() { return width; }
+int Board::gridWidth() const {
 
-int Board::gridHeight() { return height; }
+    return width;
+}
+
+int Board::gridHeight() const {
+
+    return height;
+}
+
+bool Board::isInside(Location const &loc) const {
+
+    return loc.x >= 0 && loc.x < width && loc.y >= 0 && loc.y < height;
+}
 
 void Board::drawCell(Location const &loc, Color c) {
 
