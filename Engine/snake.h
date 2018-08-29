@@ -17,9 +17,6 @@ class Snake {
       public:
         Segment(Location const &loc, Color c);
 
-        void initHead(Location const &in_loc);
-        void initTail();
-
         void moveBy(Location const &delta);
         void follow(Segment const &next);
 
@@ -32,7 +29,6 @@ class Snake {
 
     static constexpr int max_segments = 100;
     static constexpr Color head_color = Colors::Yellow;
-    static constexpr Color tail_color = Colors::Green;
 
   public:
     Snake(Location const &loc);
@@ -42,8 +38,7 @@ class Snake {
 
     Location getNextHead(Location const &delta) const;
 
-    bool isInTileExceptEnd(Location const &loc) const;
-    bool isInTile(Location const &loc) const;
+    bool contains(Location const &loc, bool growing = false) const;
 
     void draw(Board &board);
 };

@@ -2,11 +2,9 @@
 #include "location.h"
 
 Location::Location() : x(0), y(0) {
-
 }
 
 Location::Location(int x, int y) : x(x), y(y) {
-
 }
 
 Location &Location::operator+=(Location const &rhs) {

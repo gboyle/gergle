@@ -1,20 +1,20 @@
 #pragma once
 
 #include "board.h"
-#include "snake.h"
+#include "location.h"
 
-#include <random>
+#include "Colors.h"
 
 class Goal {
 
-    Location loc;
+    Location loc = {0, 0};
     Color c = Colors::Red;
 
   public:
-    Goal(std::mt19937 &rng, Board const &board, Snake const &snake);
+    Goal();
 
-    void respawn(std::mt19937 &rng, Board const &board, Snake const &snake);
-    Location const &getLocation() const;
+    bool contains(Location const &a_loc);
+    void respawn(Location const &new_loc);
 
     void draw(Board &board) const;
 };

@@ -27,8 +27,8 @@ Game::Game(MainWindow &wnd)
       gfx(wnd),
       rng(std::random_device()()),
       board(gfx),
-      snake({2, 2}),
-      goal(rng, board, snake) {
+      snake({2, 2}) {
+    goal.respawn(getOpenLocation());
 }
 
 void Game::Go() {
@@ -41,6 +41,15 @@ void Game::Go() {
 void Game::UpdateModel() {
 
     if (game_over) {
+        return;
+    }
+
+    if (!game_started) {
+
+        if (wnd.kbd.KeyIsPressed(VK_RETURN)) {
+            game_started = true;
+        }
+
         return;
     }
 
@@ -65,24 +74,32 @@ void Game::UpdateModel() {
     if (snake_move_counter <= 0) {
 
         snake_move_counter = snake_move_period;
+
         const Location next = snake.getNextHead(delta);
 
-        if (!board.isInside(next) || snake.isInTileExceptEnd(next)) {
+        bool growing = goal.contains(next);
+
+        if (!board.contains(next) || snake.contains(next, growing) ||
+            obstacle.contains(next)) {
 
             game_over = true;
 
         } else {
 
-            bool eating = next == goal.getLocation();
-
-            if (eating) {
+            if (growing) {
                 snake.grow();
             }
 
             snake.moveBy(delta);
 
-            if (eating) {
-                goal.respawn(rng, board, snake);
+            if (growing) {
+
+                obstacle.grow(getOpenLocation());
+                goal.respawn(getOpenLocation());
+
+                if (snake_move_period > 1) {
+                    --snake_move_period;
+                }
             }
         }
     }
@@ -90,10 +107,62 @@ void Game::UpdateModel() {
 
 void Game::ComposeFrame() {
 
+    board.drawBorder();
+
+    if (!game_started) {
+        drawTitle();
+        return;
+    }
+
+    obstacle.draw(board);
     goal.draw(board);
     snake.draw(board);
 
     if (game_over) {
-        SpriteCodex::DrawGameOver(200, 200, gfx);
+        drawGameOver();
     }
+}
+
+Location Game::getOpenLocation() {
+
+    std::uniform_int_distribution<> dist_x(0, board.gridWidth() - 1);
+    std::uniform_int_distribution<> dist_y(0, board.gridHeight() - 1);
+
+    Location new_loc;
+
+    while (1) {
+
+        new_loc.x = dist_x(rng);
+        new_loc.y = dist_y(rng);
+
+        if (snake.contains(new_loc)) {
+            continue;
+        }
+
+        if (obstacle.contains(new_loc)) {
+            continue;
+        }
+
+        if (goal.contains(new_loc)) {
+            continue;
+        }
+
+        return new_loc;
+    }
+}
+
+void Game::drawTitle() {
+
+    int x = (gfx.ScreenWidth - 213) / 2;
+    int y = (gfx.ScreenHeight - 160) / 2;
+
+    SpriteCodex::DrawTitle(x, y, gfx);
+}
+
+void Game::drawGameOver() {
+
+    int x = (gfx.ScreenWidth - 83) / 2;
+    int y = (gfx.ScreenHeight - 63) / 2;
+
+    SpriteCodex::DrawGameOver(x, y, gfx);
 }

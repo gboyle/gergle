@@ -20,44 +20,54 @@
  ******************************************************************************************/
 #pragma once
 
+#include "Graphics.h"
 #include "Keyboard.h"
 #include "Mouse.h"
-#include "Graphics.h"
 
 #include "board.h"
-#include "snake.h"
 #include "goal.h"
+#include "obstacle.h"
+#include "snake.h"
 
 #include <random>
 
-class Game
-{
-public:
-	Game( class MainWindow& wnd );
-	Game( const Game& ) = delete;
-	Game& operator=( const Game& ) = delete;
-	void Go();
-private:
-	void ComposeFrame();
-	void UpdateModel();
-	/********************************/
-	/*  User Functions              */
-	/********************************/
-private:
-	MainWindow& wnd;
-	Graphics gfx;
-	/********************************/
-	/*  User Variables              */
-	/********************************/
+class Game {
+  public:
+    Game(class MainWindow &wnd);
+    Game(const Game &) = delete;
+    Game &operator=(const Game &) = delete;
+    void Go();
 
-	std::mt19937 rng;
+  private:
+    void ComposeFrame();
+    void UpdateModel();
+    /********************************/
+    /*  User Functions              */
+    /********************************/
+  private:
+    MainWindow &wnd;
+    Graphics gfx;
+    /********************************/
+    /*  User Variables              */
+    /********************************/
 
-	Board board;
-	Snake snake;
-	Goal goal;
+    std::mt19937 rng;
 
-	Location delta = { 1, 0 };
-	static constexpr int snake_move_period = 20;
-	int snake_move_counter = snake_move_period;
-	bool game_over = false;
+    Board board;
+    Snake snake;
+    Goal goal;
+    Obstacle obstacle;
+
+    Location delta = {1, 0};
+
+    int snake_move_period = 20;
+    int snake_move_counter = snake_move_period;
+
+    bool game_started = false;
+    bool game_over = false;
+
+    Location getOpenLocation();
+
+    void drawTitle();
+    void drawGameOver();
 };

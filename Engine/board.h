@@ -12,13 +12,17 @@ class Board {
     int width = 10;
     int height = 10;
 
+    Location adjust;
+    Location gutter;
+
   public:
     explicit Board(Graphics &gfx);
 
     int gridWidth() const;
     int gridHeight() const;
 
-    bool isInside(Location const &loc) const;
+    bool contains(Location const &loc) const;
 
     void drawCell(Location const &loc, Color c);
+    void drawBorder();
 };
