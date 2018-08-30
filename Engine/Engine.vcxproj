@@ -141,6 +141,7 @@
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="DXErr.h" />
+    <ClInclude Include="frame-rate.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="goal.h" />
     <ClInclude Include="Graphics.h" />
@@ -156,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="board.cpp" />
     <ClCompile Include="DXErr.cpp" />
+    <ClCompile Include="frame-rate.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="goal.cpp" />
     <ClCompile Include="Graphics.cpp" />

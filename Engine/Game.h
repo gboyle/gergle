@@ -28,6 +28,7 @@
 #include "goal.h"
 #include "obstacle.h"
 #include "snake.h"
+#include "frame-rate.h"
 
 #include <random>
 
@@ -60,11 +61,13 @@ class Game {
 
     Location delta = {1, 0};
 
-    int snake_move_period = 20;
-    int snake_move_counter = snake_move_period;
+    float snake_move_threshold = 0.3f;
+    float snake_move_elapsed = 0.0f;
 
     bool game_started = false;
     bool game_over = false;
+
+	FrameRate frame_rate;
 
     Location getOpenLocation();
 

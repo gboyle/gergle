@@ -66,6 +66,9 @@
     <ClInclude Include="obstacle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="frame-rate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">
@@ -105,6 +108,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="obstacle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="frame-rate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

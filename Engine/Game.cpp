@@ -40,6 +40,8 @@ void Game::Go() {
 
 void Game::UpdateModel() {
 
+	const float dt = frame_rate.mark();
+
     if (game_over) {
         return;
     }
@@ -69,11 +71,11 @@ void Game::UpdateModel() {
         delta = {1, 0};
     }
 
-    --snake_move_counter;
+	snake_move_elapsed += dt;
+	
+    if (snake_move_elapsed > snake_move_threshold) {
 
-    if (snake_move_counter <= 0) {
-
-        snake_move_counter = snake_move_period;
+		snake_move_elapsed -= snake_move_threshold;
 
         const Location next = snake.getNextHead(delta);
 
@@ -97,8 +99,8 @@ void Game::UpdateModel() {
                 obstacle.grow(getOpenLocation());
                 goal.respawn(getOpenLocation());
 
-                if (snake_move_period > 1) {
-                    --snake_move_period;
+                if (snake_move_threshold > 0.01) {
+					snake_move_threshold -= 0.01;
                 }
             }
         }
