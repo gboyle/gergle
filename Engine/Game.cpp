@@ -118,6 +118,8 @@ void Game::UpdateModel() {
 
         if (contents == Board::CellContents::Poison) {
             speedUp();
+			board.setContents(next, Board::CellContents::Empty);
+			board.setContents(getOpenLocation(), Board::CellContents::Poison);
         }
 
         if (growing) {
@@ -186,8 +188,8 @@ bool Game::isOpenLocation(Location const &loc) {
 
 void Game::speedUp() {
 
-    if (snake_move_threshold > 0.01) {
-        snake_move_threshold -= 0.01;
+    if (snake_move_threshold > 0.005) {
+        snake_move_threshold -= 0.005;
     }
 }
 

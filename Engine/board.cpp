@@ -16,7 +16,7 @@ Board::Board(Graphics &gfx) : gfx(gfx) {
     gutter.x = Graphics::ScreenWidth - width * dimension - adjust.x;
     gutter.y = Graphics::ScreenHeight - height * dimension - adjust.y;
 
-    cells.resize(width * height);
+    cells.resize(width * height, CellContents::Empty);
 }
 
 int Board::gridWidth() const {
@@ -81,14 +81,19 @@ void Board::drawObstacles() {
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
 
-            const CellContents contents = cells[y * width + x];
-
-            if (contents == CellContents::Obstacle) {
+            switch (cells[y * width + x]) {
+            case CellContents::Obstacle:
                 drawCell({x, y}, obstacle_color);
-            } else if (contents == CellContents::Poison) {
+                break;
+            case CellContents::Poison:
                 drawCell({x, y}, poison_color);
-            } else if (contents == CellContents::Food) {
+                break;
+            case CellContents::Food:
                 drawCell({x, y}, food_color);
+                break;
+            default:
+                // nop
+                break;
             }
         }
     }

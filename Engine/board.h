@@ -10,7 +10,7 @@
 class Board {
 
   public:
-    enum class CellContents { Empty = 0, Obstacle, Food, Poison };
+    enum class CellContents: unsigned char { Empty = 0, Obstacle, Food, Poison };
 
   private:
     static constexpr int dimension = 20;
