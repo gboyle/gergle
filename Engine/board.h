@@ -9,6 +9,10 @@
 
 class Board {
 
+  public:
+    enum class CellContents { Empty = 0, Obstacle, Food, Poison };
+
+  private:
     static constexpr int dimension = 20;
     static constexpr int cell_padding = 1;
 
@@ -20,10 +24,11 @@ class Board {
     Location adjust;
     Location gutter;
 
-    std::vector<char> has_obstacle;
+    std::vector<CellContents> cells;
 
     static constexpr Color obstacle_color = Colors::LightGray;
-	static constexpr Color poison_color = { 128, 0, 128 };
+    static constexpr Color poison_color = {64, 0, 64};
+    static constexpr Color food_color = Colors::Red;
 
   public:
     explicit Board(Graphics &gfx);
@@ -33,8 +38,8 @@ class Board {
 
     bool contains(Location const &loc) const;
 
-    char checkForObstacle(Location const &loc) const;
-    void setObstacle(Location const &loc, char type);
+    CellContents getContents(Location const &loc) const;
+    void setContents(Location const &loc, CellContents contents);
 
     void drawCell(Location const &loc, Color c);
     void drawBorder();

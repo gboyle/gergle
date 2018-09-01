@@ -29,12 +29,23 @@ Game::Game(MainWindow &wnd)
       rng(std::random_device()()),
       board(gfx),
       snake({2, 2}) {
-    goal.respawn(getOpenLocation());
 
-    int poison_count = board.gridWidth() * board.gridWidth() / 4;
+    int poison_count = board.gridWidth() * board.gridWidth() / 10;
     for (int i = 0; i < poison_count; ++i) {
         Location loc = getOpenLocation();
-        board.setObstacle(loc, 'P');
+        board.setContents(loc, Board::CellContents::Poison);
+    }
+
+    int food_count = board.gridWidth() * board.gridWidth() / 200 + 1;
+    for (int i = 0; i < food_count; ++i) {
+        Location loc = getOpenLocation();
+        board.setContents(loc, Board::CellContents::Food);
+    }
+
+    int obstacle_count = board.gridWidth() * board.gridWidth() / 200 + 1;
+    for (int i = 0; i < obstacle_count; ++i) {
+        Location loc = getOpenLocation();
+        board.setContents(loc, Board::CellContents::Obstacle);
     }
 }
 
@@ -86,23 +97,27 @@ void Game::UpdateModel() {
 
         const Location next = snake.getNextHead(delta);
 
-        bool growing = goal.contains(next);
-
-        if (!board.contains(next) || snake.contains(next, growing)) {
+        if (!board.contains(next)) {
             game_over = true;
             return;
         }
 
-        char obstacle = board.checkForObstacle(next);
+        Board::CellContents contents = board.getContents(next);
 
-        if (obstacle == 'X') {
+        bool growing = contents == Board::CellContents::Food;
+
+        if (snake.contains(next, growing)) {
             game_over = true;
             return;
         }
 
-        if (obstacle == 'P') {
+        if (contents == Board::CellContents::Obstacle) {
+            game_over = true;
+            return;
+        }
+
+        if (contents == Board::CellContents::Poison) {
             speedUp();
-            // board.setObstacle(next, 0);
         }
 
         if (growing) {
@@ -113,8 +128,11 @@ void Game::UpdateModel() {
 
         if (growing) {
 
-            board.setObstacle(getOpenLocation(), 'X');
-            goal.respawn(getOpenLocation());
+			board.setContents(next, Board::CellContents::Empty);
+
+            board.setContents(getOpenLocation(), Board::CellContents::Obstacle);
+            board.setContents(getOpenLocation(), Board::CellContents::Food);
+
             speedUp();
         }
     }
@@ -130,7 +148,6 @@ void Game::ComposeFrame() {
         return;
     }
 
-    goal.draw(board);
     snake.draw(board);
 
     if (game_over) {
@@ -164,14 +181,7 @@ bool Game::isOpenLocation(Location const &loc) {
         return false;
     }
 
-    if (board.checkForObstacle(loc)) {
-        return false;
-    }
-
-    if (goal.contains(loc)) {
-        return false;
-    }
-    return true;
+    return board.getContents(loc) == Board::CellContents::Empty;
 }
 
 void Game::speedUp() {

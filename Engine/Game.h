@@ -27,7 +27,6 @@
 
 #include "board.h"
 #include "frame-rate.h"
-#include "goal.h"
 #include "snake.h"
 
 #include <random>
@@ -56,7 +55,6 @@ class Game {
 
     Board board;
     Snake snake;
-    Goal goal;
 
     Location delta = {1, 0};
 
