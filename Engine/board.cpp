@@ -15,6 +15,8 @@ Board::Board(Graphics &gfx) : gfx(gfx) {
 
     gutter.x = Graphics::ScreenWidth - width * dimension - adjust.x;
     gutter.y = Graphics::ScreenHeight - height * dimension - adjust.y;
+
+    has_obstacle.resize(width * height);
 }
 
 int Board::gridWidth() const {
@@ -30,6 +32,16 @@ int Board::gridHeight() const {
 bool Board::contains(Location const &loc) const {
 
     return loc.x >= 0 && loc.x < width && loc.y >= 0 && loc.y < height;
+}
+
+char Board::checkForObstacle(Location const &loc) const {
+
+    return has_obstacle[loc.y * width + loc.x];
+}
+
+void Board::setObstacle(Location const &loc, char type) {
+
+    has_obstacle[loc.y * width + loc.x] = type;
 }
 
 void Board::drawCell(Location const &loc, Color c) {
@@ -62,4 +74,17 @@ void Board::drawBorder() {
     // right
     gfx.DrawRectDim(Graphics::ScreenWidth - gutter.x + cell_padding, 0,
                     gutter.x - cell_padding, Graphics::ScreenHeight, c);
+}
+
+void Board::drawObstacles() {
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            if (has_obstacle[y * width + x] == 'X') {
+                drawCell({x, y}, obstacle_color);
+            } else if (has_obstacle[y * width + x] == 'P') {
+                drawCell({x, y}, poison_color);
+            }
+        }
+    }
 }

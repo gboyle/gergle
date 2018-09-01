@@ -63,9 +63,6 @@
     <ClInclude Include="goal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="obstacle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="frame-rate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -105,9 +102,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="goal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="obstacle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="frame-rate.cpp">

@@ -1,23 +1,24 @@
-/****************************************************************************************** 
- *	Chili DirectX Framework Version 16.07.20											  *	
- *	Game.cpp																			  *
- *	Copyright 2016 PlanetChili.net <http://www.planetchili.net>							  *
- *																						  *
- *	This file is part of The Chili DirectX Framework.									  *
- *																						  *
- *	The Chili DirectX Framework is free software: you can redistribute it and/or modify	  *
- *	it under the terms of the GNU General Public License as published by				  *
- *	the Free Software Foundation, either version 3 of the License, or					  *
- *	(at your option) any later version.													  *
- *																						  *
- *	The Chili DirectX Framework is distributed in the hope that it will be useful,		  *
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of						  *
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the						  *
- *	GNU General Public License for more details.										  *
- *																						  *
- *	You should have received a copy of the GNU General Public License					  *
- *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
- ******************************************************************************************/
+/******************************************************************************************
+*	Chili DirectX Framework Version 16.07.20											  *
+*	Graphics.cpp																		  *
+*	Copyright 2016 PlanetChili.net <http://www.planetchili.net>							  *
+*																						  *
+*	This file is part of The Chili DirectX Framework.									  *
+*																						  *
+*	The Chili DirectX Framework is free software: you can redistribute it and/or modify	  *
+*	it under the terms of the GNU General Public License as published by				  *
+*	the Free Software Foundation, either version 3 of the License, or					  *
+*	(at your option) any later version.													  *
+*																						  *
+*	The Chili DirectX Framework is distributed in the hope that it will be useful,		  *
+*	but WITHOUT ANY WARRANTY; without even the implied warranty of						  *
+*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the						  *
+*	GNU General Public License for more details.										  *
+*																						  *
+*	You should have received a copy of the GNU General Public License					  *
+*	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
+******************************************************************************************/
+
 #include "Game.h"
 #include "MainWindow.h"
 #include "SpriteCodex.h"
@@ -29,6 +30,12 @@ Game::Game(MainWindow &wnd)
       board(gfx),
       snake({2, 2}) {
     goal.respawn(getOpenLocation());
+
+    int poison_count = board.gridWidth() * board.gridWidth() / 4;
+    for (int i = 0; i < poison_count; ++i) {
+        Location loc = getOpenLocation();
+        board.setObstacle(loc, 'P');
+    }
 }
 
 void Game::Go() {
@@ -40,7 +47,7 @@ void Game::Go() {
 
 void Game::UpdateModel() {
 
-	const float dt = frame_rate.mark();
+    const float dt = frame_rate.mark();
 
     if (game_over) {
         return;
@@ -71,38 +78,44 @@ void Game::UpdateModel() {
         delta = {1, 0};
     }
 
-	snake_move_elapsed += dt;
-	
+    snake_move_elapsed += dt;
+
     if (snake_move_elapsed > snake_move_threshold) {
 
-		snake_move_elapsed -= snake_move_threshold;
+        snake_move_elapsed -= snake_move_threshold;
 
         const Location next = snake.getNextHead(delta);
 
         bool growing = goal.contains(next);
 
-        if (!board.contains(next) || snake.contains(next, growing) ||
-            obstacle.contains(next)) {
-
+        if (!board.contains(next) || snake.contains(next, growing)) {
             game_over = true;
+            return;
+        }
 
-        } else {
+        char obstacle = board.checkForObstacle(next);
 
-            if (growing) {
-                snake.grow();
-            }
+        if (obstacle == 'X') {
+            game_over = true;
+            return;
+        }
 
-            snake.moveBy(delta);
+        if (obstacle == 'P') {
+            speedUp();
+            // board.setObstacle(next, 0);
+        }
 
-            if (growing) {
+        if (growing) {
+            snake.grow();
+        }
 
-                obstacle.grow(getOpenLocation());
-                goal.respawn(getOpenLocation());
+        snake.moveBy(delta);
 
-                if (snake_move_threshold > 0.01) {
-					snake_move_threshold -= 0.01;
-                }
-            }
+        if (growing) {
+
+            board.setObstacle(getOpenLocation(), 'X');
+            goal.respawn(getOpenLocation());
+            speedUp();
         }
     }
 }
@@ -110,13 +123,13 @@ void Game::UpdateModel() {
 void Game::ComposeFrame() {
 
     board.drawBorder();
+    board.drawObstacles();
 
     if (!game_started) {
         drawTitle();
         return;
     }
 
-    obstacle.draw(board);
     goal.draw(board);
     snake.draw(board);
 
@@ -137,19 +150,34 @@ Location Game::getOpenLocation() {
         new_loc.x = dist_x(rng);
         new_loc.y = dist_y(rng);
 
-        if (snake.contains(new_loc)) {
-            continue;
-        }
-
-        if (obstacle.contains(new_loc)) {
-            continue;
-        }
-
-        if (goal.contains(new_loc)) {
+        if (!isOpenLocation(new_loc)) {
             continue;
         }
 
         return new_loc;
+    }
+}
+
+bool Game::isOpenLocation(Location const &loc) {
+
+    if (snake.contains(loc)) {
+        return false;
+    }
+
+    if (board.checkForObstacle(loc)) {
+        return false;
+    }
+
+    if (goal.contains(loc)) {
+        return false;
+    }
+    return true;
+}
+
+void Game::speedUp() {
+
+    if (snake_move_threshold > 0.01) {
+        snake_move_threshold -= 0.01;
     }
 }
 

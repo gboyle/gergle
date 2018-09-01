@@ -149,7 +149,6 @@
     <ClInclude Include="location.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
-    <ClInclude Include="obstacle.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="snake.h" />
     <ClInclude Include="SpriteCodex.h" />
@@ -166,7 +165,6 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="obstacle.cpp" />
     <ClCompile Include="snake.cpp" />
     <ClCompile Include="SpriteCodex.cpp" />
   </ItemGroup>
